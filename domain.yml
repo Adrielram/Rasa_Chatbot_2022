@@ -1,0 +1,265 @@
+version: "3.1"
+
+intents:
+  - saludo
+  - affirm
+  - deny
+  - presentacion_intent
+  - despedida_intent
+  - quien_sos
+  - mood_triste
+  - como_estoy
+  - mood_feliz
+  - materias_cursando
+  - como_estas
+  - carrera_year
+  - materia_cursando_year
+  - estado_carrera
+  - propone_reunion
+  - agradece_intent
+  - ask_opinion
+
+entities:
+  - nombre:
+    - influence_conversation: false
+  - year
+  - bot_mood_asked:
+    - influence_conversation: false
+  - time
+
+slots:
+  name:
+    type: text
+    mappings:
+    - type: from_entity
+      entity: nombre
+      intent: presentacion_intent
+  logged_in:
+    type: bool
+    mappings: 
+    - type: custom
+  profe:
+    type: bool
+    mappings:
+    - type: custom
+  user_mood_set:
+    type: bool
+    mappings:
+    - type: custom
+  is_group:
+    type: bool
+    mappings:
+    - type: custom
+  hora:
+    type: text
+    mappings:
+    - type: custom
+      influence_conversation: true
+      conditions:
+      - active_loop: evento_form
+  dia:
+    type: text
+    mappings:
+    - type: custom
+      influence_conversation: true
+      conditions:
+      - active_loop: evento_form
+  mes:
+    type: text
+    mappings:
+    - type: custom
+      influence_conversation: true
+      conditions:
+      - active_loop: evento_form
+  CantUsers:
+    type: text
+    mappings:
+    - type: custom
+  #Cantidad de usuarios del chat
+  CantUsersConfirmed:
+    type: text
+    initial_value: 0
+    mappings:
+    - type: custom
+      conditions:
+      - active_loop: evento_form
+  #Cantidad de usuarios que confirmaron la reunion, solo si el form esta activo
+  UsersConfirmed:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: custom
+      condition:
+      - active_loop: evento_form
+  # UsersConfirmed = 1 si la mayoria de usuarios confirmo la reunion. En la action validate_form se decide si se cumple, o llama action_listen
+  #Husers:
+  #  type: list
+  #  mappings:
+  #  - type: custom
+  # Lista de usuarios (id telegram) y sus horarios ocupados
+  #Luser:
+  #  type: text
+  #  mappings:
+  #  - type: custom
+  # Id el último usuario que dijo 'no puedo tal horario' (TENER EN CUENTA LA ID DEL BOT EN LA ACTION)
+  # Para futura implementacion: Husers y Luser
+
+actions:
+  - action_presentacion
+  - action_cursando
+  - action_cursando_year
+  - action_user_mood
+  - action_bot_mood_asked
+  - action_session_start
+  - action_primer_saludo
+  - action_muestra_eventos
+  - action_crea_evento
+  - validate_evento_form
+  - action_reset_event_slots
+  - action_usuario_puede
+  - action_ask_UsersConfirmed
+
+forms:
+  evento_form:
+    required_slots:
+      - mes
+      - dia
+      - hora
+      - UsersConfirmed
+
+#UsersConfirmed debe estar en 1
+
+responses:
+  utter_hola:
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Hola {name}"
+  - text: "Hola"
+
+  utter_despedida:
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "chau {name}!"
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Nos vemos {name}!"
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Suerte {name}!"
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Que te vaya bien {name}!"
+  - text: "chau!"
+  - text: "Nos vemos!"
+  - text: "Suerte!"
+  - text: "Que te vaya bien!"
+#HACER ESTO EN CUSTOM ACTION, YA QUE TAMBIEN DEBERIA VARIAR EN: SI NO ESTOY EN GRUPO, USO SLOT. 
+#SI ESTOY EN GRUPO, ME FIJO SU NOMBRE EN EL ARCHIVO ( Y SI NO LO DIJO EN TELEGRAM).
+
+  utter_hola_como_estas:
+  - text: "Hola!, como estas?"
+
+  utter_quien_sos:
+  - text: "Soy RamBot, un asistente virtual, represento al alumno Adriel Ram Ferrero."
+
+  utter_affirm:
+  - text: "Si!"
+
+  utter_un_placer:
+    - condition:
+      - type: slot
+        name: logged_in
+        value: true
+      text: "Un placer {name}!"
+    - text: "Un placer!"
+
+  utter_cheer_up:
+  - text: "Te puedo ayudar con algo?"
+  - text: "Que paso?"
+
+  utter_feliz:
+  - text: "que bueno!"
+  - text: "me alegro!"
+
+  utter_como_estoy:
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Muy bien {name}!"
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Bien {name}!"
+  - text: "Bien!"
+  - text: "Muy bien!"
+
+  utter_carrera_year:
+  - text: "Estoy en 2do, pero cursando una materia de tercero"
+
+  utter_ask_name:
+  - text: "como te llamas?"
+  - text: "me dirias tu nombre?"
+  - text: "no se quien sos, perdon"
+
+  utter_como_estoy_y_vos:
+  - text: "Bien!, vos como estas?"
+  - text: "Muy bien!, vos?"
+
+  utter_estado_carrera:
+  - text: " por ahora vengo bien, vengo al dia."
+
+  utter_fallback:
+  - text: "perdon, no te entendí"
+
+  utter_ok:
+  - text: "Bueno"
+  - text: "Ok"
+  - text: "Está bien"
+
+#  utter_confirmar_reunion:
+#  - text: "Bueno, entonces la reunion para: {tiempo} ?"
+
+  utter_denada:
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "Denada {name}!"
+  - condition:
+      - type: slot
+        name: logged_in
+        value: true
+    text: "No hay de problema {name}!"
+  - text: "Denada!"
+  - text: "No hay problema!"
+
+  utter_reunion_no_disponible:
+  - text: "Esta funcion no esta habilitada para chat privados!"
+
+  utter_ask_mes:
+  - text: "Cuando nos reunimos?"
+
+  utter_ask_dia:
+  - text: " Bien, que dia pueden?"
+
+  utter_ask_hora:
+  - text: " A q hora?"
+  
+session_config:
+  session_expiration_time: 300
+  carry_over_slots_to_new_session: false
+# 5 mintuos de sesion, y en la nueva sesion que se borren los slots, porque uspongo el bot no lo prendo y apago como ahora que pruebo
+# sino que esta todo el tiempo online y en ese caso si un usuario le hablara dia despues, la session seguiría.(CREO)
+# PROBAR SI ME BORRA TODO
