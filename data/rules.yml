@@ -1,0 +1,100 @@
+version: "3.1"
+
+rules:
+
+- rule: Saludar por primera vez
+  conversation_start: true
+  steps:
+  - intent: saludo
+  - action: action_primer_saludo
+
+- rule: Saludar el resto de veces
+  conversation_start: false
+  steps:
+  - intent: saludo
+  - action: utter_hola
+
+- rule: Despedida
+  steps:
+  - intent: despedida_intent
+  - action: utter_despedida
+
+- rule: fallback behaviour simple 
+  steps:
+  - intent: nlu_fallback
+  - action: utter_fallback
+
+- rule: fallback behaviour simple  grupo
+  steps:
+  - intent: nlu_fallback
+  - slot_was_set:
+    - is_group: true
+  - action: action_listen
+
+- rule: estado carrera
+  steps:
+  - intent: estado_carrera
+  - action: utter_estado_carrera
+
+- rule: quien sos -no grupo
+  steps:
+  - intent: quien_sos
+  - slot_was_set:
+    - is_group: false
+  - action: utter_quien_sos
+
+- rule: presentacion
+  steps:
+  - intent: presentacion_intent
+  - action: action_presentacion
+  - action: utter_un_placer
+
+- rule: agradecido
+  steps:
+  - intent: agradece_intent
+  - action: utter_denada
+
+- rule: propuesta de reunion en chat privado (no inicia form)
+  condition:
+  - slot_was_set:
+    - is_group: false
+  steps:
+  - intent: propone_reunion
+  - action: utter_reunion_no_disponible
+
+#AUQNUE ME MANEJE NE STORIES, PONER REGLAS DE ACTIVAR Y COMPLETAR FORM
+- rule: activo form evento
+  condition:
+  - slot_was_set:
+    - is_group: true
+  steps:
+  - intent: propone_reunion
+  - action: evento_form
+  - active_loop: evento_form
+
+- rule: Completa form
+  condition:
+  - active_loop: evento_form
+  - slot_was_set:
+    - is_group: true
+  steps:
+  - action: evento_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_crea_evento
+
+
+# CAMBIO DE CONTEXTO DE DIALOGO, A FUTURO 
+# rules:
+# - rule: Interruption in Pizza Form
+#   condition:
+#   # Condition that form is active.
+#   - active_loop: simple_pizza_form
+#   steps:
+#   # This unhappy path handles the case of an intent `bot_challenge`.
+#   - intent: bot_challenge
+#   - action: utter_iamabot
+#   # Return to form after handling the `bot_challenge` intent
+#   - action: simple_pizza_form
+#   - active_loop: simple_pizza_form

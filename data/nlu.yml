@@ -1,0 +1,183 @@
+version: "3.1"
+
+nlu:
+- intent: saludo
+  examples: |
+    - hola
+    - buenas
+    - buen dia
+    - buenas tardes
+    - buenas noches
+    - hola adriel
+
+- intent: affirm
+  examples: |
+    - si
+    - se
+    - tal cual
+    - por supuesto
+    - suena bien
+    - correcto
+    - obvio
+    - bueno
+    - me parece bien
+
+- intent: deny
+  examples: |
+    - no!
+    - no mucho
+    - nunca
+    - no lo creo
+    - no me gusta
+    - para nada
+    - nop
+    - no puedo
+    - estoy ocupado
+
+- intent: quien_sos
+  examples: |
+    - quien sos?
+    - como te llamas?
+    - cual es tu nombre?
+    - con quien estoy hablando?
+    - como es tu nombre?
+
+- intent: despedida_intent
+  examples: | 
+    - chau!
+    - me voy
+    - nos vemos
+    - adios
+    - que tengas lindo dia
+    - que te vaya bien
+    - me retiro
+
+- intent: mood_triste
+  examples: |
+    - estoy triste
+    - estoy mal [vos](bot_mood_asked)
+    - no estoy bien
+    - estoy masomenos
+    - me siento mal
+    - me siento triste
+    - no tengo un buen dia [vos como estas]{"entity":"bot_mood_asked","value":"vos"}
+    - yo mal
+
+- intent: mood_feliz
+  examples: |
+    - estoy bien [vos](bot_mood_asked)
+    - muy bien 
+    - yo? bien [vos como estas]{"entity":"bot_mood_asked","value":"vos"}
+    - bastante bien [y vos]{"entity":"bot_mood_asked","value":"vos"}
+    - bien
+    - estoy feliz
+
+- intent: acuerdo_feliz
+  examples: |
+    - que bueno!
+    - me alegro
+    - buenisimo
+    - mejor asi!
+
+- intent: ask_opinion
+  examples: |
+    - qué te parece?
+    - te gusta?
+    - esta bueno?
+    - cual es tu opinion?
+    - que opinás?
+
+- intent: materias_cursando
+  examples: |
+    - estas cursando alguna materia?
+    - que materias estas cursando?
+    - en que materias estas?
+    - que estas cursando?
+
+- intent: como_estas
+  examples: |
+    - como estas?
+    - todo bien?
+    - como andas?
+    - como te va?
+    - como has estado?
+    - vos como estas?
+
+- intent: carrera_year
+  examples: |
+    - en que año estas?
+    - por que año vas?
+    - que año estas cursando?
+    - de que año sos?
+
+- intent: materia_cursando_year
+  examples: |
+    - que materias de [segundo]{"entity":"year","value":"2"} estas cursando?
+    - en que materias de [tercero]{"entity":"year","value":"3"} estas?
+    - estas cursando alguna materia de [primero]{"entity":"year","value":"1"}?
+    - ya estas cursando una materia de [cuarto]{"entity":"year","value":"4"}?
+    - de [quinto]{"entity":"year","value":"5"} cursas alguna?
+
+- intent: estado_carrera
+  examples: |
+    - como venis con la carrera?
+    - estas atrasado?
+    - te atraso alguna materia?
+    - venis bien con la carrera?
+
+- intent: presentacion_intent
+  examples: |
+    - soy [adriel](nombre)
+    - mi nombre es [Analia](nombre)
+    - me llamo [estani](nombre)
+    - yo soy [Santi](nombre)
+    - me podes llamar [nelson](nombre)
+
+- intent: propone_reunion
+  examples: |
+    - Les parece hacer un meet?
+    - Quieren hacer meet el miercoles?
+    - Si quieren nos reunimos a las 20 horas
+    - nos reunimos el viernes a las 15?
+    - pueden meet mañana?
+    - podemos reunirnos hoy
+    - Puedo reunirme el martes 18
+    - estoy libre a las 16
+    - bueno, te parece bien el viernes?
+# PROBAR SI SE DETECTA ESTE INTENT, (con confianza), CON LA PALABRA 'PODES'
+
+- intent: agradece_intent
+  examples: |
+    - te agradezco
+    - muchas gracias!
+    - gracias
+    - te debo una
+    - gracias por tu tiempo
+
+- regex: bot_mood_asked
+  examples: |
+    - ((([aA-zZ]\w+ *){1,})+(, )*){1,}
+
+- lookup: nombre
+  examples: |
+    - matias
+    - eduardo
+    - santiago
+    - Santi
+    - nelson
+    - analia
+    - mati
+    - edu
+    - adriel
+    - Maria
+    - marithe
+    - estani
+    - adri
+    - paqui
+    - estanislao
+    - nahue
+    - nahuel
+    - luca
+    - lucas
+    - valen
+    - valentin

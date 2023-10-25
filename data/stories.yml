@@ -1,0 +1,102 @@
+version: "3.1"
+
+stories:
+
+- story: sad 
+  steps:
+  - intent: mood_triste
+  - action: action_user_mood
+  - action: utter_cheer_up
+  - action: action_bot_mood_asked
+
+- story: feliz
+  steps:
+  - intent: mood_feliz
+  - action: action_user_mood
+  - action: utter_feliz
+  - action: action_bot_mood_asked
+
+- story: materias cursando
+  steps:
+  - intent: materias_cursando
+  - action: action_cursando
+
+- story: como estas
+  steps:
+  - intent: como_estas
+  - slot_was_set:
+    - user_mood_set: true
+  - action: utter_como_estoy
+
+- story: como estas + vos
+  steps:
+  - intent: como_estas
+  - slot_was_set:
+    - user_mood_set: false
+  - action: utter_como_estoy_y_vos
+
+- story: en que año estas
+  steps:
+  - intent: estado_carrera
+  - action: utter_estado_carrera
+  - intent: carrera_year
+  - action: utter_carrera_year
+  - intent: materia_cursando_year
+  - action: action_cursando_year
+
+- story: inicio form evento
+  steps:
+  - slot_was_set:
+    - is_group: true
+  - intent: propone_reunion
+  - action: evento_form
+  - active_loop: evento_form
+  - slot_was_set:
+    - requested_slot: mes
+  #extract_slot
+  - slot_was_set:
+    - mes: mayo
+  - slot_was_set:
+    - requested_slot: dia
+  #extract_slot
+  - slot_was_set:
+    - dia: 10
+  - slot_was_set:
+    - requested_slot: hora
+  #extract_slot
+  - slot_was_set:
+    - hora: 15
+  # se valida horario solo (form validate) y confirma si estoy ocupado o no
+  - slot_was_set:
+    - requested_slot: UsersConfirmed
+  #el form automaticamente valida UsersConfirmed como corresponde
+  - slot_was_set:
+    - UsersConfirmed: 1
+  # la respuesta del form al no haberse seteado el slot es action_listen
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_crea_evento
+
+# que pasa si el form esta activo y otra persona propone_reunion:
+#               1) de esa fecha que propone, solo quedarme con lo q todavia no tengo (asumir que esta complementando)
+#                             en este caso, para proponer nuevo horario, el usuario deberia 'deny' antes.
+#                             PARECIERA OPCION MAS SENCILLA, ME QUEDO CON ESTA
+
+#implementar más para el cambio de contexto
+
+- story: usuario confirma
+  steps:
+  - slot_was_set:
+    - is_group: true
+  - active_loop: evento_form
+  - intent: affirm
+  - action: action_usuario_puede
+
+- story: usuario niega
+  steps:
+  - slot_was_set:
+    - is_group: true
+  - active_loop: evento_form
+  - intent: deny
+  - action: action_reset_event_slots
